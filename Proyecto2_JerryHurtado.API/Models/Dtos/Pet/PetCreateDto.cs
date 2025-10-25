@@ -1,0 +1,13 @@
+﻿namespace Proyecto2_JerryHurtado.API.Models.Dtos.Pet
+{
+    public class PetCreateDto
+    {
+        public Guid CustomerId { get; set; }
+        public int PetSpecies { get; set; }
+        public string Name { get; set; } = null!;
+        public string Race { get; set; } = null!;
+        public int Age { get; set; }
+        public string Color { get; set; } = null!;
+        public DateOnly LastVisitDate { get; set; }
+    }
+}

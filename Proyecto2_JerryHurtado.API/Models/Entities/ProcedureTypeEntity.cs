@@ -1,0 +1,12 @@
+﻿namespace Proyecto2_JerryHurtado.API.Models.Entities
+{
+    public class ProcedureTypeEntity
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
+
+        public decimal Price { get; set; }
+    }
+}
