@@ -7,7 +7,7 @@ using Proyecto2_JerryHurtado.API.Services.Interfaces;
 
 namespace Proyecto2_JerryHurtado.API.Services
 {
-    public class PetProcedureService : IService<PetProcedureCreateDto, PetProcedureUpdateDto, PetProcedureDto>, IProcedureCascadeDeletionService
+    public class PetProcedureService : IService<PetProcedureCreateDto, PetProcedureUpdateDto, PetProcedureDto>, IProcedureCascadeDeletionService, IGetAllService<PetProcedureDto>
     {
         private readonly IReadOnlyPetService _petService;
         private readonly Lazy<IReadOnlyCustomerService> _customerService;
@@ -25,6 +25,7 @@ namespace Proyecto2_JerryHurtado.API.Services
         private static readonly Guid Procedure1Id = Guid.Parse("d09988ef-5f76-4aa7-b39c-60f8026de7ee");
         private static readonly Guid Procedure2Id = Guid.Parse("ad9935a1-8535-4260-a0d3-be6953be0f2e");
         private static readonly Guid Procedure3Id = Guid.Parse("dca76a58-fe78-4691-b76d-eaac7c4d3669");
+        private static readonly Guid Procedure4Id = Guid.Parse("66ce1833-ee60-428a-bb94-484a5de2812b");
 
         private static readonly Guid Customer1Id = Guid.Parse("d3e4bd42-7acb-45bb-b4d7-2d2d5cc75ace");
         private static readonly Guid Customer2Id = Guid.Parse("714ee094-735d-47b2-af3a-c9be3ea2cf6b");
@@ -34,7 +35,6 @@ namespace Proyecto2_JerryHurtado.API.Services
         private static readonly Guid Pet2Id = Guid.Parse("77636d32-e7dc-4305-8f29-47653dfc3d72");
         private static readonly Guid Pet3Id = Guid.Parse("5da2eb06-8907-4354-b981-0fa54f062465");
         private static readonly Guid Pet4Id = Guid.Parse("b585e1b1-e7e0-48e9-9173-acf8f134da0c");
-        private static readonly Guid Pet5Id = Guid.Parse("47c34923-b693-407d-938c-f945ce5e7a15");
 
         private readonly List<PetProcedureEntity> _entities = new()
         {
@@ -44,7 +44,7 @@ namespace Proyecto2_JerryHurtado.API.Services
                 CustomerId = Customer1Id,
                 PetId = Pet1Id,
                 ProcedureTypeId = 2,
-                Status = 1,
+                Status = (int)PetProcedureStatus.InProgress,
                 Customer = new CustomerEntity
                 {
                     Id = Customer1Id,
@@ -76,7 +76,7 @@ namespace Proyecto2_JerryHurtado.API.Services
                 CustomerId = Customer1Id,
                 PetId = Pet2Id,
                 ProcedureTypeId = 3,
-                Status = 2,
+                Status = (int)PetProcedureStatus.Billed,
                 Customer = new CustomerEntity
                 {
                     Id = Customer1Id,
@@ -107,8 +107,8 @@ namespace Proyecto2_JerryHurtado.API.Services
                 Id = Procedure3Id,
                 CustomerId = Customer2Id,
                 PetId = Pet3Id,
-                ProcedureTypeId = 10,
-                Status = 3,
+                ProcedureTypeId = 1,
+                Status = (int)PetProcedureStatus.Scheduled,
                 Customer = new CustomerEntity
                 {
                     Id = Customer2Id,
@@ -132,6 +132,38 @@ namespace Proyecto2_JerryHurtado.API.Services
                     Age = 5,
                     Color = "Blanco",
                     LastVisitDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(-8))
+                }
+            },
+            new PetProcedureEntity
+            {
+                Id = Procedure4Id,
+                CustomerId = Customer3Id,
+                PetId = Pet4Id,
+                ProcedureTypeId = 14,
+                Status = (int)PetProcedureStatus.Scheduled,
+                Customer = new CustomerEntity
+                {
+                    Id = Customer3Id,
+                    PersonalIdNumber = "2-2445-6749",
+                    Name = "Pablo Martínez",
+                    ProvinceId = 2,
+                    CantonId = 2,
+                    DistrictId = 4,
+                    Address = "Calle 1, Casa 2",
+                    Email = "pablo@email.com",
+                    PhoneNumber = "8888-8888",
+                    ContactPreference = 1
+                },
+                Pet = new PetEntity
+                {
+                    Id = Pet4Id,
+                    CustomerId = Customer3Id,
+                    PetSpecies = (int)PetSpecies.Rabbit,
+                    Name = "Copito",
+                    Race = "Mini Lop",
+                    Age = 1,
+                    Color = "Blanco",
+                    LastVisitDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(-12)),
                 }
             },
         };

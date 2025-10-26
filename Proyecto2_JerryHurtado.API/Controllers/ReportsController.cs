@@ -13,9 +13,9 @@ namespace Proyecto2_JerryHurtado.API.Controllers
     [ApiController]
     public class ReportsController : ControllerBase
     {
-        private readonly IProjectedVaccinationReportService _service;
+        private readonly IVaccinationAnnualService _service;
 
-        public ReportsController(IProjectedVaccinationReportService vaccinationReportService)
+        public ReportsController(IVaccinationAnnualService vaccinationReportService)
         {
             _service = vaccinationReportService;
         }
@@ -32,9 +32,9 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         /// </returns>
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<List<ReportDto>>), StatusCodes.Status200OK)]
-        public IActionResult GetProjectedVaccinationReports()
+        public IActionResult GetVaccinationsDueNextWeek()
         {
-            var data = _service.GetProjectedVaccinationReports();
+            var data = _service.GetVaccinationsDueNextWeek();
             return StatusCode(
                 StatusCodes.Status200OK,
                 ApiResponseFactory.Success(

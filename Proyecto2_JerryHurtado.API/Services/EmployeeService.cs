@@ -24,7 +24,7 @@ namespace Proyecto2_JerryHurtado.API.Services
                 HireDate = new DateOnly(2020, 1, 1),
                 DailySalary = 15000,
                 TerminationDate = new DateOnly(2025, 12, 31),
-                Type = 1
+                Type = (int)EmployeeType.Veterinarian
             },
             new EmployeeEntity
             {
@@ -34,7 +34,7 @@ namespace Proyecto2_JerryHurtado.API.Services
                 HireDate = new DateOnly(2018, 3, 10),
                 DailySalary = 18000,
                 TerminationDate = new DateOnly(2026, 6, 30),
-                Type = 3
+                Type = (int)EmployeeType.Administrative
             },
             new EmployeeEntity
             {
@@ -44,7 +44,7 @@ namespace Proyecto2_JerryHurtado.API.Services
                 HireDate = new DateOnly(2021, 7, 1),
                 DailySalary = 14000,
                 TerminationDate = new DateOnly(2025, 11, 15),
-                Type = 5
+                Type = (int)EmployeeType.Groomer
             },
             new EmployeeEntity
             {
@@ -54,7 +54,7 @@ namespace Proyecto2_JerryHurtado.API.Services
                 HireDate = new DateOnly(2019, 9, 20),
                 DailySalary = 16000,
                 TerminationDate = new DateOnly(2024, 3, 31),
-                Type = 2
+                Type = (int)EmployeeType.Assistant
             }
         };
 

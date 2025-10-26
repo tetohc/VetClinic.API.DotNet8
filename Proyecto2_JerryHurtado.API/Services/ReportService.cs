@@ -1,4 +1,5 @@
-﻿using Proyecto2_JerryHurtado.API.Models.Dtos.ProcedureType;
+﻿using Proyecto2_JerryHurtado.API.Models.Dtos.PetProcedure;
+using Proyecto2_JerryHurtado.API.Models.Dtos.ProcedureType;
 using Proyecto2_JerryHurtado.API.Models.Dtos.Report;
 using Proyecto2_JerryHurtado.API.Services.Interfaces;
 
@@ -7,30 +8,29 @@ namespace Proyecto2_JerryHurtado.API.Services
     /// <summary>
     /// Servicio para generar reportes de proyección de vacunación.
     /// </summary>
-    public class ReportService : IProjectedVaccinationReportService
+    public class ReportService : IVaccinationAnnualService
     {
-        private readonly IReadOnlyCustomerService _customerService;
-        private readonly IReadOnlyPetService _petService;
+        private readonly IGetAllService<PetProcedureDto> _petProcedureService;
 
-        public ReportService(
-            IReadOnlyCustomerService readOnlyCustomerService,
-            IReadOnlyPetService readOnlyPetService)
+        public ReportService(IGetAllService<PetProcedureDto> petProcedureService)
         {
-            _customerService = readOnlyCustomerService;
-            _petService = readOnlyPetService;
+            _petProcedureService = petProcedureService;
         }
 
-        public List<ReportDto> GetProjectedVaccinationReports()
+        public List<ReportDto> GetVaccinationsDueNextWeek()
         {
-            var pets = _petService.GetAll();
-            var customers = _customerService.GetAll();
+            var petProcedures = _petProcedureService.GetAll();
+            int annualVaccinationProcedureTypeId = 14;
+            var procedureTypeAnnualVaccination = petProcedures
+                .Where(x => x.ProcedureTypeId == annualVaccinationProcedureTypeId)
+                .ToList();
 
-            var petsDueForVaccination = pets.Where(x => x.IsNextVisitInNextWeek()).ToList();
+            var petsDueForVaccination = procedureTypeAnnualVaccination.Where(x => x.Pet.IsNextVisitInNextWeek()).ToList();
             var report = petsDueForVaccination
-                .Select(pet => new ReportDto
+                .Select(procedure => new ReportDto
                 {
-                    Customer = customers.FirstOrDefault(x => x.Id == pet.CustomerId)!,
-                    Pet = pet,
+                    Customer = procedure.Customer,
+                    Pet = procedure.Pet,
                     ProjectedProcedure = new ProcedureTypeDto
                     {
                         Id = 14,

@@ -74,8 +74,8 @@ namespace Proyecto2_JerryHurtado.API.Settings
                 new Lazy<IProcedureCascadeDeletionService>(() =>
                     provider.GetRequiredService<IProcedureCascadeDeletionService>()));
 
-            // Se registra Lazy<IReadOnlyCustomerService> para resolver un ciclo de dependencia indirecto entre PetService y PetProcedureService.
-            // Este ciclo surge debido a la necesidad de acceder a datos de clientes desde ambos servicios, mientras que PetProcedureService también depende de PetService.
+            // Se registra Lazy<IReadOnlyCustomerService> para resolver un ciclo de dependencia indirecto entre PetService y CustomerService.
+            // Este ciclo surge debido a la necesidad de acceder a datos de clientes y mascotas desde ambos servicios.
             // Al utilizar Lazy<T>, se difiere la resolución de IReadOnlyCustomerService hasta el momento en que realmente se necesita,
             // evitando errores de activación en tiempo de ejecución y permitiendo una inyección segura y controlada.
             services.AddSingleton(provider =>
@@ -121,6 +121,9 @@ namespace Proyecto2_JerryHurtado.API.Settings
             services.AddSingleton<IService<PetProcedureCreateDto, PetProcedureUpdateDto, PetProcedureDto>>(provider =>
                 provider.GetRequiredService<PetProcedureService>());
 
+            services.AddSingleton<IGetAllService<PetProcedureDto>>(provider =>
+                provider.GetRequiredService<PetProcedureService>());
+            
             services.AddSingleton<IProcedureCascadeDeletionService>(provider =>
                 provider.GetRequiredService<PetProcedureService>());
 
@@ -128,7 +131,7 @@ namespace Proyecto2_JerryHurtado.API.Settings
 
             #region Reportes
 
-            services.AddScoped<IProjectedVaccinationReportService, ReportService>();
+            services.AddScoped<IVaccinationAnnualService, ReportService>();
 
             #endregion Reportes
 

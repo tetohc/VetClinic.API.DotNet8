@@ -10,5 +10,11 @@
         public int Age { get; set; }
         public string Color { get; set; } = null!;
         public DateOnly LastVisitDate { get; set; }
+
+        public DateOnly NextVisitAnualDate() => LastVisitDate.AddYears(1);
+
+        public bool IsNextVisitInNextWeek() =>
+            NextVisitAnualDate() >= DateOnly.FromDateTime(DateTime.Now) &&
+            NextVisitAnualDate() <= DateOnly.FromDateTime(DateTime.Now.AddDays(7));
     }
 }
