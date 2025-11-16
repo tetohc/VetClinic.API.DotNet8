@@ -3,10 +3,15 @@
     public class CantonEntity
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+
+        public string Name { get; set; } = null!;
+
         public int ProvinceId { get; set; }
 
-        public ProvinceEntity Province { get; set; } = null!;
-        public List<DistrictEntity> Districts { get; set; } = new();
+        public virtual ICollection<CustomerEntity> Customer { get; set; } = new List<CustomerEntity>();
+
+        public virtual ICollection<DistrictEntity> District { get; set; } = new List<DistrictEntity>();
+
+        public virtual ProvinceEntity Province { get; set; } = null!;
     }
 }

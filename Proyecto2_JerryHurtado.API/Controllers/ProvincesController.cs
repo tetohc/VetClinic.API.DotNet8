@@ -26,9 +26,9 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         /// <returns>Una lista con las provincias disponibles.</returns>
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<List<ProvinceDto>>), StatusCodes.Status200OK)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var data = _service.GetAll();
+            var data = await _service.GetAll();
             return StatusCode(
                 StatusCodes.Status200OK,
                 ApiResponseFactory.Success(

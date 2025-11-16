@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string Name { get; set; } = null!;
 
-        public List<CantonEntity> Cantons { get; set; } = new();
+        public virtual ICollection<CantonEntity> Canton { get; set; } = new List<CantonEntity>();
+        public virtual ICollection<CustomerEntity> Customer { get; set; } = new List<CustomerEntity>();
     }
 }

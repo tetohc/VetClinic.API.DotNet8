@@ -1,4 +1,6 @@
-﻿using Proyecto2_JerryHurtado.API.Models.Dtos.PetProcedure;
+﻿using Microsoft.EntityFrameworkCore;
+using Proyecto2_JerryHurtado.API.Database;
+using Proyecto2_JerryHurtado.API.Mappers;
 using Proyecto2_JerryHurtado.API.Models.Dtos.ProcedureType;
 using Proyecto2_JerryHurtado.API.Models.Dtos.Report;
 using Proyecto2_JerryHurtado.API.Services.Interfaces;
@@ -10,19 +12,24 @@ namespace Proyecto2_JerryHurtado.API.Services
     /// </summary>
     public class ReportService : IVaccinationAnnualService
     {
-        private readonly IGetAllService<PetProcedureDto> _petProcedureService;
+        private readonly DatabaseContext _databaseContext;
 
-        public ReportService(IGetAllService<PetProcedureDto> petProcedureService)
+        public ReportService(DatabaseContext databaseContext)
         {
-            _petProcedureService = petProcedureService;
+            _databaseContext = databaseContext;
         }
 
-        public List<ReportDto> GetVaccinationsDueNextWeek()
+        public async Task<List<ReportDto>> GetVaccinationsDueNextWeek()
         {
-            var petProcedures = _petProcedureService.GetAll();
+            var petProcedures = await _databaseContext.PetProcedure
+                .Include(x => x.Customer)
+                .Include(x => x.Pet)
+                .ToListAsync();
+
             int annualVaccinationProcedureTypeId = 14;
             var procedureTypeAnnualVaccination = petProcedures
                 .Where(x => x.ProcedureTypeId == annualVaccinationProcedureTypeId)
+                .Select(x => x.ToDto())
                 .ToList();
 
             var petsDueForVaccination = procedureTypeAnnualVaccination.Where(x => x.Pet.IsNextVisitInNextWeek()).ToList();

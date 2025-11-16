@@ -11,7 +11,7 @@
         public string Color { get; set; } = null!;
         public DateOnly LastVisitDate { get; set; }
 
-        public CustomerEntity Customer { get; set; } = null!;
-        public List<PetProcedureEntity> PetProcedures { get; set; } = new();
+        public virtual CustomerEntity Customer { get; set; } = null!;
+        public virtual ICollection<PetProcedureEntity> PetProcedure { get; set; } = new List<PetProcedureEntity>();
     }
 }

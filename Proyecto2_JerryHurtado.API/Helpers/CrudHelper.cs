@@ -23,13 +23,13 @@ namespace Proyecto2_JerryHurtado.API.Helpers
         /// <param name="model">Datos del nuevo elemento.</param>
         /// <param name="validator">Validador de reglas para el DTO de creación.</param>
         /// <returns>Respuesta HTTP con el resultado de la operación.</returns>
-        public static ApiResponse<TypedResult<TCreateDto>> Create<TCreateDto, TUpdateDto, TReadDto>(
+        public static async Task<ApiResponse<TypedResult<TCreateDto>>> Create<TCreateDto, TUpdateDto, TReadDto>(
             IService<TCreateDto, TUpdateDto, TReadDto> service, TCreateDto model,
             IValidator<TCreateDto> validator)
         {
             try
             {
-                var validate = validator.Validate(model);
+                var validate = await validator.ValidateAsync(model);
                 if (!validate.IsValid)
                     return ApiResponseFactory.Failure(
                             StatusCodes.Status400BadRequest,
@@ -37,7 +37,7 @@ namespace Proyecto2_JerryHurtado.API.Helpers
                             ApiResponseMessage.BadRequestCreate400.GetDisplayName()
                         );
 
-                bool created = service.Create(model);
+                bool created = await service.Create(model);
                 return created
                     ? ApiResponseFactory.Success(
                         StatusCodes.Status201Created,
@@ -71,7 +71,7 @@ namespace Proyecto2_JerryHurtado.API.Helpers
         /// <param name="id">ID del elemento.</param>
         /// <param name="validator">Validador de reglas para el DTO de actualización.</param>
         /// <returns>Respuesta HTTP con el resultado.</returns>
-        public static ApiResponse<TypedResult<TUpdateDto>> Update<TCreateDto, TUpdateDto, TReadDto>(
+        public static async Task<ApiResponse<TypedResult<TUpdateDto>>> Update<TCreateDto, TUpdateDto, TReadDto>(
             IService<TCreateDto, TUpdateDto, TReadDto> service,
             TUpdateDto model,
             Guid id,
@@ -79,14 +79,14 @@ namespace Proyecto2_JerryHurtado.API.Helpers
         {
             try
             {
-                var isExist = service.GetById(id);
+                var isExist = await service.GetById(id);
                 if (isExist is null)
                     return ApiResponseFactory.Failure<TypedResult<TUpdateDto>>(
                         StatusCodes.Status404NotFound,
                         data: null,
                         ApiResponseMessage.NotFound404.GetDisplayName());
 
-                var validate = validator.Validate(model);
+                var validate = await validator.ValidateAsync(model);
                 if (!validate.IsValid)
                     return ApiResponseFactory.Failure(
                             StatusCodes.Status400BadRequest,
@@ -94,7 +94,7 @@ namespace Proyecto2_JerryHurtado.API.Helpers
                             ApiResponseMessage.BadRequestUpdate400.GetDisplayName()
                         );
 
-                bool updated = service.Update(model);
+                bool updated = await service.Update(model);
                 return updated
                     ? ApiResponseFactory.Success(
                         StatusCodes.Status200OK,
@@ -126,18 +126,18 @@ namespace Proyecto2_JerryHurtado.API.Helpers
         /// <param name="service">Servicio que gestiona los datos.</param>
         /// <param name="id">ID del elemento.</param>
         /// <returns>Respuesta HTTP con el resultado.</returns>
-        public static ApiResponse<TReadDto> Delete<TCreateDto, TUpdateDto, TReadDto>(
+        public static async Task<ApiResponse<TReadDto>> Delete<TCreateDto, TUpdateDto, TReadDto>(
             IService<TCreateDto, TUpdateDto, TReadDto> service, Guid id)
         {
             try
             {
-                var isExist = service.GetById(id);
+                var isExist = await service.GetById(id);
                 if (isExist is null)
                     return ApiResponseFactory.Failure<TReadDto>(
                         statusCode: StatusCodes.Status404NotFound,
                         message: ApiResponseMessage.NotFound404.GetDisplayName());
 
-                bool deleted = service.Delete(id);
+                bool deleted = await service.Delete(id);
                 return deleted
                     ? ApiResponseFactory.Success(
                         statusCode: StatusCodes.Status200OK,
@@ -171,7 +171,7 @@ namespace Proyecto2_JerryHurtado.API.Helpers
         /// <param name="service">Servicio que gestiona los datos.</param>
         /// <param name="id">Identificador único del elemento.</param>
         /// <returns>Respuesta HTTP con el elemento encontrado o mensaje de error.</returns>
-        public static ApiResponse<TReadDto> GetById<TCreateDto, TUpdateDto, TReadDto>(
+        public static async Task<ApiResponse<TReadDto>> GetById<TCreateDto, TUpdateDto, TReadDto>(
             IService<TCreateDto, TUpdateDto, TReadDto> service, Guid id)
         {
             if (id == Guid.Empty)
@@ -182,7 +182,7 @@ namespace Proyecto2_JerryHurtado.API.Helpers
                 );
             }
 
-            var data = service.GetById(id);
+            var data = await service.GetById(id);
             if (data is null)
             {
                 return ApiResponseFactory.Failure<TReadDto>(
@@ -206,10 +206,10 @@ namespace Proyecto2_JerryHurtado.API.Helpers
         /// <typeparam name="TReadDto">DTO de lectura (requerido).</typeparam>
         /// <param name="service">Servicio que gestiona los datos.</param>
         /// <returns>Respuesta HTTP con la lista de elementos.</returns>
-        public static ApiResponse<List<TReadDto>> GetList<TCreateDto, TUpdateDto, TReadDto>(
+        public static async Task<ApiResponse<List<TReadDto>>> GetList<TCreateDto, TUpdateDto, TReadDto>(
             IService<TCreateDto, TUpdateDto, TReadDto> service)
         {
-            var data = service.GetAll();
+            var data = await service.GetAll();
             return ApiResponseFactory.Success(
                 statusCode: StatusCodes.Status200OK,
                 data,
@@ -226,10 +226,10 @@ namespace Proyecto2_JerryHurtado.API.Helpers
         /// <param name="service">Servicio que gestiona los datos.</param>
         /// <param name="query">Texto de búsqueda utilizado para filtrar los elementos.</param>
         /// <returns>Respuesta HTTP con la lista de elementos filtrados.</returns>
-        public static ApiResponse<List<TReadDto>> Search<TCreateDto, TUpdateDto, TReadDto>(
+        public static async Task<ApiResponse<List<TReadDto>>> Search<TCreateDto, TUpdateDto, TReadDto>(
             IService<TCreateDto, TUpdateDto, TReadDto> service, string query)
         {
-            var data = service.Search(query.Trim());
+            var data = await service.Search(query.Trim());
             return ApiResponseFactory.Success(
                 statusCode: StatusCodes.Status200OK,
                 data,
@@ -245,10 +245,10 @@ namespace Proyecto2_JerryHurtado.API.Helpers
         /// <typeparam name="TReadDto">DTO de lectura (requerido).</typeparam>
         /// <param name="service">Servicio que gestiona los datos.</param>
         /// <returns>Respuesta HTTP con el número total de elementos.</returns>
-        public static ApiResponse<int> Count<TCreateDto, TUpdateDto, TReadDto>(
+        public static async Task<ApiResponse<int>> Count<TCreateDto, TUpdateDto, TReadDto>(
             IService<TCreateDto, TUpdateDto, TReadDto> service)
         {
-            var count = service.Count();
+            var count = await service.Count();
             return ApiResponseFactory.Success(
                 statusCode: StatusCodes.Status200OK,
                 data: count,

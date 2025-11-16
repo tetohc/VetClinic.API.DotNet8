@@ -13,10 +13,10 @@
         public string PhoneNumber { get; set; } = null!;
         public int ContactPreference { get; set; }
 
-        public ProvinceEntity Province { get; set; } = null!;
-        public CantonEntity Canton { get; set; } = null!;
-        public DistrictEntity District { get; set; } = null!;
-        public List<PetEntity> Pets { get; set; } = new();
-        public List<PetProcedureEntity> PetProcedures { get; set; } = new();
+        public virtual CantonEntity Canton { get; set; } = null!;
+        public virtual DistrictEntity District { get; set; } = null!;
+        public virtual ICollection<PetEntity> Pet { get; set; } = new List<PetEntity>();
+        public virtual ICollection<PetProcedureEntity> PetProcedure { get; set; } = new List<PetProcedureEntity>();
+        public virtual ProvinceEntity Province { get; set; } = null!;
     }
 }

@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Proyecto2_JerryHurtado.API.Database;
 using Proyecto2_JerryHurtado.API.Models.Dtos.Canton;
 using Proyecto2_JerryHurtado.API.Models.Dtos.Customer;
 using Proyecto2_JerryHurtado.API.Models.Dtos.District;
@@ -34,7 +36,7 @@ namespace Proyecto2_JerryHurtado.API.Settings
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Proyecto 2 UNED",
+                    Title = "Proyecto 3 UNED",
                     Description = "API para Veterinaria, Fundamentos de programación web",
                     Contact = new OpenApiContact
                     {
@@ -59,81 +61,17 @@ namespace Proyecto2_JerryHurtado.API.Settings
         {
             #region Ubicaciones
 
-            services.AddSingleton<IGetAllService<ProvinceDto>, ProvinceService>();
-            services.AddSingleton<IGetAllByParentService<CantonDto>, CantonService>();
-            services.AddSingleton<IGetAllByParentService<DistrictDto>, DistrictService>();
+            services.AddScoped<IGetAllService<ProvinceDto>, ProvinceService>();
+            services.AddScoped<IGetAllByParentService<CantonDto>, CantonService>();
+            services.AddScoped<IGetAllByParentService<DistrictDto>, DistrictService>();
 
             #endregion Ubicaciones
 
-            #region Resolución diferida (Lazy<T>)
-
-            // Se registra Lazy<IProcedureCascadeDeletionService> para resolver un ciclo de dependencia indirecto entre PetService, PetProcedureService y CustomerService,
-            // permitiendo la resolución diferida de la dependencia y evitando errores de activación en tiempo de ejecución.
-            // Esto surge debido a las operaciones en cascada de eliminación que se realizan entre estos servicios.
-            services.AddSingleton(provider =>
-                new Lazy<IProcedureCascadeDeletionService>(() =>
-                    provider.GetRequiredService<IProcedureCascadeDeletionService>()));
-
-            // Se registra Lazy<IReadOnlyCustomerService> para resolver un ciclo de dependencia indirecto entre PetService y CustomerService.
-            // Este ciclo surge debido a la necesidad de acceder a datos de clientes y mascotas desde ambos servicios.
-            // Al utilizar Lazy<T>, se difiere la resolución de IReadOnlyCustomerService hasta el momento en que realmente se necesita,
-            // evitando errores de activación en tiempo de ejecución y permitiendo una inyección segura y controlada.
-            services.AddSingleton(provider =>
-                new Lazy<IReadOnlyCustomerService>(() =>
-                    provider.GetRequiredService<IReadOnlyCustomerService>()));
-
-            #endregion Resolución diferida (Lazy<T>)
-
-            #region Clientes
-
-            services.AddSingleton<CustomerService>();
-            services.AddSingleton<IService<CustomerCreateDto, CustomerUpdateDto, CustomerDto>>(provider =>
-                provider.GetRequiredService<CustomerService>());
-
-            services.AddSingleton<IReadOnlyCustomerService>(provider =>
-                provider.GetRequiredService<CustomerService>());
-
-            #endregion Clientes
-
-            #region Empleados
-
-            services.AddSingleton<IService<EmployeeCreateDto, EmployeeUpdateDto, EmployeeDto>, EmployeeService>();
-
-            #endregion Empleados
-
-            #region Mascotas
-
-            services.AddSingleton<PetService>();
-            services.AddSingleton<IService<PetCreateDto, PetUpdateDto, PetDto>>(provider =>
-                provider.GetRequiredService<PetService>());
-
-            services.AddSingleton<IPetCascadeDeletionService>(provider =>
-                provider.GetRequiredService<PetService>());
-
-            services.AddSingleton<IReadOnlyPetService>(provider =>
-                provider.GetRequiredService<PetService>());
-
-            #endregion Mascotas
-
-            #region Procedimientos de mascotas
-
-            services.AddSingleton<PetProcedureService>();
-            services.AddSingleton<IService<PetProcedureCreateDto, PetProcedureUpdateDto, PetProcedureDto>>(provider =>
-                provider.GetRequiredService<PetProcedureService>());
-
-            services.AddSingleton<IGetAllService<PetProcedureDto>>(provider =>
-                provider.GetRequiredService<PetProcedureService>());
-            
-            services.AddSingleton<IProcedureCascadeDeletionService>(provider =>
-                provider.GetRequiredService<PetProcedureService>());
-
-            #endregion Procedimientos de mascotas
-
-            #region Reportes
-
+            services.AddScoped<IService<CustomerCreateDto, CustomerUpdateDto, CustomerDto>, CustomerService>();
+            services.AddScoped<IService<EmployeeCreateDto, EmployeeUpdateDto, EmployeeDto>, EmployeeService>();
+            services.AddScoped<IService<PetCreateDto, PetUpdateDto, PetDto>, PetService>();
+            services.AddScoped<IService<PetProcedureCreateDto, PetProcedureUpdateDto, PetProcedureDto>, PetProcedureService>();
             services.AddScoped<IVaccinationAnnualService, ReportService>();
-
-            #endregion Reportes
 
             return services;
         }
@@ -157,6 +95,23 @@ namespace Proyecto2_JerryHurtado.API.Settings
             services.AddScoped<IValidator<PetProcedureCreateDto>, CreatePetProcedureValidator>();
             services.AddScoped<IValidator<PetProcedureUpdateDto>, UpdatePetProcedureValidator>();
 
+            return services;
+        }
+
+        /// <summary>
+        /// Registra el servicio de persistencia configurando el DbContext de la aplicación.
+        /// </summary>
+        /// <param name="services">Colección de servicios de la aplicación.</param>
+        /// <param name="configuration">Configuración de la aplicación que contiene la cadena de conexión.</param>
+        /// <returns>La colección de servicios actualizada con el DbContext registrado.</returns>
+        public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<DatabaseContext>(options =>
+                options.UseSqlServer(
+                    configuration.GetConnectionString("SQLConnectionString")
+                ),
+                ServiceLifetime.Transient
+            );
             return services;
         }
     }

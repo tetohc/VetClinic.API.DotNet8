@@ -14,10 +14,12 @@ namespace Proyecto2_JerryHurtado.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
+            // Scaffold-DbContext Name=SQLConnectionString Microsoft.EntityFrameworkCore.SqlServer -NoPluralize -OutputDir Database -Context DatabaseService
             builder.Services
                 .AddSwaggerConfiguration()
                 .AddApplicationServices()
-                .AddFluentValidation();
+                .AddFluentValidation()
+                .AddPersistence(configuration: builder.Configuration);
 
             var app = builder.Build();
 

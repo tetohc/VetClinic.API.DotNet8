@@ -31,10 +31,10 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiResponse<EmployeeCreateDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<object>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ApiResponse<object>))]
-        public IActionResult Create([FromBody] EmployeeCreateDto employeeCreateDto,
+        public async Task<IActionResult> Create([FromBody] EmployeeCreateDto employeeCreateDto,
             [FromServices] IValidator<EmployeeCreateDto> validator)
         {
-            var result = CrudHelper.Create(_service, employeeCreateDto, validator);
+            var result = await CrudHelper.Create(_service, employeeCreateDto, validator);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -50,11 +50,11 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<object>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<object>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ApiResponse<object>))]
-        public IActionResult Update([FromBody] EmployeeUpdateDto employeeUpdateDto,
+        public async Task<IActionResult> Update([FromBody] EmployeeUpdateDto employeeUpdateDto,
             [FromRoute] Guid id,
             [FromServices] IValidator<EmployeeUpdateDto> validator)
         {
-            var result = CrudHelper.Update(_service, employeeUpdateDto, id, validator);
+            var result = await CrudHelper.Update(_service, employeeUpdateDto, id, validator);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -68,9 +68,9 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<object>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<object>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ApiResponse<object>))]
-        public IActionResult Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var result = CrudHelper.Delete(_service, id);
+            var result = await CrudHelper.Delete(_service, id);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -87,9 +87,9 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<EmployeeDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<object>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiResponse<object>))]
-        public IActionResult GetById([FromRoute] Guid id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var result = CrudHelper.GetById(_service, id);
+            var result = await CrudHelper.GetById(_service, id);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -105,11 +105,11 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         /// </returns>
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<List<EmployeeDto>>), StatusCodes.Status200OK)]
-        public IActionResult GetAll([FromQuery] string? query)
+        public async Task<IActionResult> GetAll([FromQuery] string? query)
         {
             var result = string.IsNullOrWhiteSpace(query)
-                ? CrudHelper.GetList(_service)
-                : CrudHelper.Search(_service, query);
+                ? await CrudHelper.GetList(_service)
+                : await CrudHelper.Search(_service, query);
 
             return StatusCode(StatusCodes.Status200OK, result);
         }
@@ -120,9 +120,9 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         /// <returns>Respuesta HTTP con el resultado de la operación.</returns>
         [HttpGet("Count")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
-        public IActionResult Count()
+        public async Task<IActionResult> Count()
         {
-            var result = CrudHelper.Count(_service);
+            var result = await CrudHelper.Count(_service);
             return StatusCode(StatusCodes.Status200OK, result);
         }
 

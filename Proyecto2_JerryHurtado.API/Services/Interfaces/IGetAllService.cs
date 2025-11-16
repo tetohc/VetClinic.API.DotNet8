@@ -2,6 +2,6 @@
 {
     public interface IGetAllService<T>
     {
-        List<T> GetAll();
+        Task<List<T>> GetAll();
     }
 }

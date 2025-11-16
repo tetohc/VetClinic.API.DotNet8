@@ -30,9 +30,9 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         /// <returns>Una lista con los cantones disponibles.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<List<SelectListItemDto<int>>>), StatusCodes.Status200OK)]
-        public IActionResult GetByCanton(int id)
+        public async Task<IActionResult> GetByCanton(int id)
         {
-            var data = _service.GetAllById(id);
+            var data = await _service.GetAllById(id);
             var result = data.Select(x => new SelectListItemDto<int> { Id = x.Id, Name = x.Name }).ToList();
             return StatusCode(
                 StatusCodes.Status200OK,

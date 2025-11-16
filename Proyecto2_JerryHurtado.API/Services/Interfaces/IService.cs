@@ -8,18 +8,18 @@
     /// <typeparam name="TReadDto">Tipo de DTO utilizado para devolver datos al cliente.</typeparam>
     public interface IService<TCreateDto, TUpdateDto, TReadDto>
     {
-        bool Create(TCreateDto createDto);
+        Task<bool> Create(TCreateDto createDto);
 
-        bool Update(TUpdateDto updateDto);
+        Task<bool> Update(TUpdateDto updateDto);
 
-        bool Delete(Guid id);
+        Task<bool> Delete(Guid id);
 
-        TReadDto? GetById(Guid id);
+        Task<TReadDto?> GetById(Guid id);
 
-        List<TReadDto> GetAll();
+        Task<List<TReadDto>> GetAll();
 
-        List<TReadDto> Search(string query);
+        Task<List<TReadDto>> Search(string query);
 
-        int Count();
+        Task<int> Count();
     }
 }

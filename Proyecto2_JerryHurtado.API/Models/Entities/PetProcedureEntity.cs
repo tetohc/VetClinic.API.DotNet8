@@ -8,8 +8,7 @@
         public int ProcedureTypeId { get; set; }
         public int Status { get; set; }
 
-        public CustomerEntity Customer { get; set; } = null!;
-        public PetEntity Pet { get; set; } = null!;
-        public ProcedureTypeEntity ProcedureType { get; set; } = null!;
+        public virtual CustomerEntity Customer { get; set; } = null!;
+        public virtual PetEntity Pet { get; set; } = null!;
     }
 }

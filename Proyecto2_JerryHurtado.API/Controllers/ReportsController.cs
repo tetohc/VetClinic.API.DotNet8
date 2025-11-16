@@ -32,9 +32,9 @@ namespace Proyecto2_JerryHurtado.API.Controllers
         /// </returns>
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<List<ReportDto>>), StatusCodes.Status200OK)]
-        public IActionResult GetVaccinationsDueNextWeek()
+        public async Task<IActionResult> GetVaccinationsDueNextWeek()
         {
-            var data = _service.GetVaccinationsDueNextWeek();
+            var data = await _service.GetVaccinationsDueNextWeek();
             return StatusCode(
                 StatusCodes.Status200OK,
                 ApiResponseFactory.Success(

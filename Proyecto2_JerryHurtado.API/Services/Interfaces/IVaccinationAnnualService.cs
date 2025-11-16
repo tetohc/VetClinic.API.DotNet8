@@ -7,6 +7,6 @@ namespace Proyecto2_JerryHurtado.API.Services.Interfaces
     /// </summary>
     public interface IVaccinationAnnualService
     {
-        public List<ReportDto> GetVaccinationsDueNextWeek();
+        Task<List<ReportDto>> GetVaccinationsDueNextWeek();
     }
 }

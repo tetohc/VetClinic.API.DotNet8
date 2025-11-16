@@ -6,6 +6,8 @@
         public string Name { get; set; } = string.Empty;
         public int CantonId { get; set; }
 
-        public CantonEntity Canton { get; set; } = null!;
+        public virtual CantonEntity Canton { get; set; } = null!;
+
+        public virtual ICollection<CustomerEntity> Customer { get; set; } = new List<CustomerEntity>();
     }
 }
